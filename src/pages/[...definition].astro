@@ -1,0 +1,35 @@
+---
+import {getCollection} from 'astro:content';
+
+export async function getStaticPaths() {
+  const definitions = await getCollection('definitions');
+  return definitions.map((definition) => {
+    return {
+      params: {definition: definition.slug},
+      props: {definition},
+    };
+  });
+}
+
+const {definition} = Astro.props;
+const {Content} = await definition.render();
+---
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{definition.data.title}</title>
+</head>
+<body>
+<div class="w-full content-center p-5">
+    <div class="card w-full glass">
+        <figure><img src={definition.data.image} alt={definition.data.title}/></figure>
+        <div class="card-body">
+            <h2 class="card-title">{definition.data.title}</h2>
+            <Content/>
+        </div>
+    </div>
+</div>
+</body>
+</html>
